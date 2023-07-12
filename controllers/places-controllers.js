@@ -2,6 +2,7 @@ const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
 const getCoordinatesForAddress = require('../shared/util/location');
+const Place = require('../models/place');
 let DUMMY_PLACES = require('../shared/data/places.json');
 
 const getPlaceById = (req, res, next) => {
@@ -38,32 +39,36 @@ const getPlaceByUserId = (req, res, next) => {
 const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
 
-  if(!errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     console.log(errors);
     next(new HttpError('Invalid inputs passed, please check your data.', 422));
   }
 
-  const { title, imageUrl, description, address, creator } = req.body;
-  
+  const { title, image, description, address, creator } = req.body;
+
   let coordinates;
   try {
     coordinates = await getCoordinatesForAddress(address);
-  } catch(error) {
+  } catch (error) {
     next(error);
   }
-  
 
-  const createdPlace = {
-    id: uuidv4(),
+  const createdPlace = new Place({
     title,
-    imageUrl,
     description,
+    image,
     address,
-    creator,
-    location: coordinates
-  };
+    location: coordinates,
+    creator
+  });
 
-  DUMMY_PLACES.push(createdPlace);
+  try {
+    await createdPlace.save();
+  } catch(err) {
+    console.log(err);
+    const error = new HttpError(`Creating place failed.Please try again. \nDetails:\n[${err}]`, 500);
+  }
+  
 
   res.status(201).json({
     place: createdPlace
@@ -74,7 +79,7 @@ const updatePlace = (req, res, next) => {
 
   const errors = validationResult(req);
 
-  if(!errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     console.log(errors);
     throw new HttpError('Invalid inputs passed, please check your data.', 422);
   }
@@ -96,7 +101,7 @@ const updatePlace = (req, res, next) => {
 
 const deletePlace = (req, res, next) => {
   const placeId = req.params.pid;
-  if(!DUMMY_PLACES.find(p => p.id === placeId)) {
+  if (!DUMMY_PLACES.find(p => p.id === placeId)) {
     throw new HttpError('Could not find a place for that id.', 404);
   }
   // const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);

@@ -3,9 +3,9 @@
     "port": 5500,
     "db": {
         "mongodb": {
-            "username": "",
-            "password": "",
-            "database": ""
+            "username": "inafsdeveloper",
+            "password": "YN1XRdCbSktULKYp",
+            "database": "places"
         }
     }
 }

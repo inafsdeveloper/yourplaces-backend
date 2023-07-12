@@ -11,7 +11,7 @@ const placeSchema = new Schema({
             lat: {type: Number, required: true},
             lng: {type: Number, required: true}
         },
-        creator: {type: Number, required: true}
+        creator: {type: String, required: true}
 });
 
 module.exports = mongoose.model('Place', placeSchema);
