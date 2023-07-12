@@ -1,6 +1,7 @@
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
+const getCoordinatesForAddress = require('../shared/util/location');
 let DUMMY_PLACES = require('../shared/data/places.json');
 
 const getPlaceById = (req, res, next) => {
@@ -34,16 +35,24 @@ const getPlaceByUserId = (req, res, next) => {
   res.json({ places });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
 
   if(!errors.isEmpty()) {
     console.log(errors);
-    throw new HttpError('Invalid inputs passed, please check your data.', 422);
+    next(new HttpError('Invalid inputs passed, please check your data.', 422));
   }
 
-  const { title, imageUrl, description, address, coordinates, creator } = req.body;
+  const { title, imageUrl, description, address, creator } = req.body;
   
+  let coordinates;
+  try {
+    coordinates = await getCoordinatesForAddress(address);
+  } catch(error) {
+    next(error);
+  }
+  
+
   const createdPlace = {
     id: uuidv4(),
     title,
