@@ -1,6 +1,6 @@
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
-const DUMMY_PLACES = require('../shared/data/places.json');
+let DUMMY_PLACES = require('../shared/data/places.json');
 
 const getPlaceById = (req, res, next) => {
   const placeId = req.params.pid; // { pid: 'p1' }
@@ -16,8 +16,6 @@ const getPlaceById = (req, res, next) => {
   res.json({ place }); // => { place } => { place: place }
 };
 
-// function getPlaceById() { ... }
-// const getPlaceById = function() { ... }
 
 const getPlaceByUserId = (req, res, next) => {
   const userId = req.params.uid;
@@ -71,7 +69,12 @@ const updatePlace = (req, res, next) => {
 };
 
 const deletePlace = (req, res, next) => {
+  const placeId = req.params.pid;
+  // const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
+  // delete DUMMY_PLACES[placeIndex];
+  DUMMY_PLACES = DUMMY_PLACES.filter(p => p.id !== placeId);
 
+  res.json({message : "Delted place."});
 }
 
 exports.getPlaceById = getPlaceById;
