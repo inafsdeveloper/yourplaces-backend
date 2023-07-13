@@ -5,7 +5,7 @@
         "mongodb": {
             "username": "inafsdeveloper",
             "password": "YN1XRdCbSktULKYp",
-            "database": "places"
+            "database": "mern"
         }
     }
 }
