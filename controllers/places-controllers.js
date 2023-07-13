@@ -5,22 +5,27 @@ const getCoordinatesForAddress = require('../shared/util/location');
 const Place = require('../models/place');
 let DUMMY_PLACES = require('../shared/data/places.json');
 
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid; // { pid: 'p1' }
 
-  const place = DUMMY_PLACES.find(p => {
-    return p.id === placeId;
-  });
-
-  if (!place) {
-    throw new HttpError('Could not find a place for the provided id.', 404);
+  let place;
+  try {
+    place = await Place.findById(placeId);
+  } catch (err) {
+    const error = new HttpError(`Something went wrong, could not find a place. \nDetails:\n[${err}]`, 500);
+    return next(error);
   }
 
-  res.json({ place }); // => { place } => { place: place }
+  if (!place) {
+    const error = new HttpError('Could not find a place for the provided id.', 404);
+    return next(error);
+  }
+
+  res.json({ place: place.toObject({ getters: true }) }); // => { place } => { place: place }
 };
 
 
-const getPlaceByUserId = (req, res, next) => {
+const getPlaceByUserId = async (req, res, next) => {
   const userId = req.params.uid;
 
   const places = DUMMY_PLACES.filter(p => {
@@ -64,11 +69,12 @@ const createPlace = async (req, res, next) => {
 
   try {
     await createdPlace.save();
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     const error = new HttpError(`Creating place failed.Please try again. \nDetails:\n[${err}]`, 500);
+    next(error);
   }
-  
+
 
   res.status(201).json({
     place: createdPlace
