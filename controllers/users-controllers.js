@@ -26,7 +26,7 @@ const signup = async (req, res, next) => {
         return next(new HttpError('Invalid inputs passed, please check your data.', 422));
     }
 
-    const { name, email, password, places } = req.body;
+    const { name, email, password } = req.body;
 
 
     let existingUser;
@@ -48,7 +48,7 @@ const signup = async (req, res, next) => {
         email,
         image: 'https://clipart-library.com/newhp/kissclipart-computer-geek-cartoon-clipart-geek-nerd-clip-art-d978f3a27174b0f9.png',
         password,
-        places
+        places: []
     });
 
     try {
