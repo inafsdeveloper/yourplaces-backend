@@ -10,7 +10,7 @@ const getUsers = async (req, res, next) => {
     try {
         users = await User.find({}, '-password');
     } catch(err) {
-        const error = new HttpError(`Unable to find users, please try again later.\n Details \n [${err}]`, 500);
+        const error = new HttpError(`Unable to find users, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
@@ -34,7 +34,7 @@ const signup = async (req, res, next) => {
     try {
         existingUser = await User.findOne({email: email});
     } catch(err) {
-        const error = new HttpError(`Signing Up failed, please try again later.\n Details \n [${err}]`, 500);
+        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
@@ -54,7 +54,7 @@ const signup = async (req, res, next) => {
     try {
         await createdUser.save();
     } catch(err) {
-        const error = new HttpError(`Signing Up failed, please try again later.\n Details \n [${err}]`, 500);
+        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
@@ -76,7 +76,7 @@ const login = async (req, res, next) => {
     try {
         existingUser = await User.findOne({email: email});
     } catch(err) {
-        const error = new HttpError(`Logging in failed, please try again later.\n Details \n [${err}]`, 500);
+        const error = new HttpError(`Logging in failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
