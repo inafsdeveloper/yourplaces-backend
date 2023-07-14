@@ -2,7 +2,7 @@
     {
         "id": "p1",
         "title": "Empire State Building",
-        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/NYC_Empire_State_Building.jpg/640px-NYC_Empire_State_Building.jpg",
         "description": "One of the most famous sky scrapers in the world!",
         "address": "20 W 34th St., New York, NY 10001",
         "creator": "u1",
@@ -14,7 +14,7 @@
     {
         "id": "p2",
         "title": "Eiffel Tower",
-        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Eiffel_Tower_20051010.jpg/639px-Eiffel_Tower_20051010.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Eiffel_Tower_20051010.jpg/639px-Eiffel_Tower_20051010.jpg",
         "description": "Tallest Tower In France",
         "address": "Champ de Mars, 5 Av. Anatole France, 75007 Paris, France",
         "creator": "u1",
@@ -26,7 +26,7 @@
     {
         "id": "p3",
         "title": "Taj Mahal",
-        "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Taj_Mahal.jpg/640px-Taj_Mahal.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Taj_Mahal.jpg/640px-Taj_Mahal.jpg",
         "description": "One of wonders of the world.",
         "address": "Dharmapuri, Forest Colony, Tajganj, Agra, Uttar Pradesh 282001, India",
         "creator": "u2",
