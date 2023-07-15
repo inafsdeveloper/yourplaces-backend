@@ -46,7 +46,8 @@ const signup = async (req, res, next) => {
     const createdUser = new User({
         name,
         email,
-        image: 'https://clipart-library.com/newhp/kissclipart-computer-geek-cartoon-clipart-geek-nerd-clip-art-d978f3a27174b0f9.png',
+        image: req.file.path,
+        // image: 'https://clipart-library.com/newhp/kissclipart-computer-geek-cartoon-clipart-geek-nerd-clip-art-d978f3a27174b0f9.png',
         password,
         places: []
     });
