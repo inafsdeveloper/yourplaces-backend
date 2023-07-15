@@ -1,3 +1,4 @@
+const fs = require('fs');
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
@@ -168,6 +169,7 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError('Could not find a place for this id.', 404));
   }
 
+  const imagePath = place.image;
 
   try {
     const sess = await mongoose.startSession();
@@ -180,6 +182,10 @@ const deletePlace = async (req, res, next) => {
     const error = new HttpError(`Something went wrong, could not find a place to delete. Please try again. Details:[${err}]`, 500);
     return next(error);
   }
+
+  fs.unlink(imagePath, (err) => {
+    console.log(`Unable the delete file. [${err}]`);
+});
 
   res.json({ message: "Deleted place." });
 }
