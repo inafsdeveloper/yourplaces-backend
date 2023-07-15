@@ -1,6 +1,7 @@
 const HttpError = require('../models/http-error');
 const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 let DUMMY_USERS = require('../shared/data/users.json');
 
@@ -43,12 +44,22 @@ const signup = async (req, res, next) => {
         return next(error);
     }
 
+    let hashedPassowrd;
+
+    try {
+        hashedPassowrd = await bcrypt.hash(password, 12);
+    } catch (err) {
+        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
+        return next(error);
+    }
+    
+
     const createdUser = new User({
         name,
         email,
         image: req.file.path,
         // image: 'https://clipart-library.com/newhp/kissclipart-computer-geek-cartoon-clipart-geek-nerd-clip-art-d978f3a27174b0f9.png',
-        password,
+        password: hashedPassowrd,
         places: []
     });
 
