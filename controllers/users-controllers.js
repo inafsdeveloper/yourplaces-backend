@@ -4,7 +4,7 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const secretKey = require('../shared/config/secret.json');
+const secretKey = require('../shared/config/secret.json')['secret-key'];
 let DUMMY_USERS = require('../shared/data/users.json');
 
 
@@ -137,14 +137,15 @@ const login = async (req, res, next) => {
 
     try {
         token = jwt.sign({
-            userId: createdUser.id,
-            email: createdUser.email
+            userId: existingUser.id,
+            email: existingUser.email
         },
             secretKey,
             { expiresIn: '1h' }
         );
     } catch(err) {
-        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
+        const error = new HttpError(`Could not login, please try again later.Details: [${err}]`, 500);
+        console.log(err);
         return next(error);
     }
 
