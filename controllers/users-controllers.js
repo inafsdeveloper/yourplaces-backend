@@ -3,20 +3,23 @@ const { v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const secretKey = require('../shared/config/secret.json');
 let DUMMY_USERS = require('../shared/data/users.json');
+
 
 const getUsers = async (req, res, next) => {
     let users;
 
     try {
         users = await User.find({}, '-password');
-    } catch(err) {
+    } catch (err) {
         const error = new HttpError(`Unable to find users, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
 
-    res.json({users: users.map(user => user.toObject({getters: true}))});
+    res.json({ users: users.map(user => user.toObject({ getters: true })) });
 };
 
 const signup = async (req, res, next) => {
@@ -33,13 +36,13 @@ const signup = async (req, res, next) => {
     let existingUser;
 
     try {
-        existingUser = await User.findOne({email: email});
-    } catch(err) {
+        existingUser = await User.findOne({ email: email });
+    } catch (err) {
         const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
-    if(existingUser) {
+    if (existingUser) {
         const error = new HttpError('User exist already, please login instead.', 422);
         return next(error);
     }
@@ -52,25 +55,46 @@ const signup = async (req, res, next) => {
         const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
-    
+
 
     const createdUser = new User({
         name,
         email,
         image: req.file.path,
-        // image: 'https://clipart-library.com/newhp/kissclipart-computer-geek-cartoon-clipart-geek-nerd-clip-art-d978f3a27174b0f9.png',
         password: hashedPassowrd,
         places: []
     });
 
     try {
         await createdUser.save();
-    } catch(err) {
+    } catch (err) {
         const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
 
-    res.status(201).json({ user: createdUser.toObject({getters: true})});
+    let token;
+
+    try {
+        token = jwt.sign({
+            userId: createdUser.id,
+            email: createdUser.email
+        },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+    } catch(err) {
+        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
+        return next(error);
+    }
+    
+
+    res
+        .status(201)
+        .json({ user: {
+            id: createdUser.id,
+            email: createdUser.email,
+            token: token
+        }});
 };
 
 const login = async (req, res, next) => {
@@ -86,8 +110,8 @@ const login = async (req, res, next) => {
     let existingUser;
 
     try {
-        existingUser = await User.findOne({email: email});
-    } catch(err) {
+        existingUser = await User.findOne({ email: email });
+    } catch (err) {
         const error = new HttpError(`Logging in failed, please try again later.Details: [${err}]`, 500);
         return next(error);
     }
@@ -105,11 +129,30 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
-    if(!isValidPassword) {
+    if (!isValidPassword) {
         return next(new HttpError('Could not identify user, credentials seem to be wrong.', 401));
     }
 
-    res.json({ message: "Logged in!", user: existingUser.toObject({getters: true}) });
+    let token;
+
+    try {
+        token = jwt.sign({
+            userId: createdUser.id,
+            email: createdUser.email
+        },
+            secretKey,
+            { expiresIn: '1h' }
+        );
+    } catch(err) {
+        const error = new HttpError(`Signing Up failed, please try again later.Details: [${err}]`, 500);
+        return next(error);
+    }
+
+    res.json({user: {
+        id: existingUser.id,
+        email: existingUser.email,
+        token: token
+    }});
 
 };
 
