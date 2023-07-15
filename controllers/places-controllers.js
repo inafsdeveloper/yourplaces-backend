@@ -77,7 +77,7 @@ const createPlace = async (req, res, next) => {
     creator
   });
 
-  
+
   let user;
 
   try {
@@ -138,6 +138,10 @@ const updatePlace = async (req, res, next) => {
   }
 
 
+  if (place.creator.toString() !== req.userData.userId) {
+    const error = new HttpError(`User is not authorized to update the place.`, 401);
+    return next(error);
+  }
 
   place.title = title;
   place.description = description;
@@ -165,16 +169,21 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
-  if(!place) {
+  if (!place) {
     return next(new HttpError('Could not find a place for this id.', 404));
   }
 
+  if (place.creator.id !== req.userData.userId) {
+    const error = new HttpError(`User is not authorized to delete the place.`, 401);
+    return next(error);
+  }
+  
   const imagePath = place.image;
 
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
-    await place.deleteOne({session: sess});
+    await place.deleteOne({ session: sess });
     place.creator.places.pull(place);
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
@@ -185,7 +194,7 @@ const deletePlace = async (req, res, next) => {
 
   fs.unlink(imagePath, (err) => {
     console.log(`Unable the delete file. [${err}]`);
-});
+  });
 
   res.json({ message: "Deleted place." });
 }
