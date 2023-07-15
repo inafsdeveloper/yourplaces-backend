@@ -2,7 +2,10 @@ const jwt = require('jsonwebtoken');
 const HttpError = require('../models/http-error');
 const secretKey = require('../shared/config/secret.json')['secret-key'];
 module.exports = (req, res, next) => {
-    console.log('check-auth.js');
+    if(req.method === 'OPTIONS') {
+        return next();
+    }
+    
     try {
         const token = req.headers.authorization.split(' ')[1]; // Authorization // Bearer Token
         if (!token) {
