@@ -4,8 +4,6 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
-const secretKey = require('../shared/config/secret.json')['secret-key'];
-let DUMMY_USERS = require('../shared/data/users.json');
 
 
 const getUsers = async (req, res, next) => {
@@ -79,7 +77,7 @@ const signup = async (req, res, next) => {
             userId: createdUser.id,
             email: createdUser.email
         },
-            secretKey,
+            process.env.JWT_SECRET_KEY,
             { expiresIn: '1h' }
         );
     } catch(err) {
@@ -140,7 +138,7 @@ const login = async (req, res, next) => {
             userId: existingUser.id,
             email: existingUser.email
         },
-            secretKey,
+            process.env.JWT_SECRET_KEY,
             { expiresIn: '1h' }
         );
     } catch(err) {

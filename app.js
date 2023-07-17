@@ -21,8 +21,8 @@ app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
     next();
 })
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
     // On Error if file exists, delete the file
-    if(req.file) {
+    if (req.file) {
         fs.unlink(req.file.path, (err) => {
             console.log(`Unable the delete file. [${err}]`);
         });
@@ -51,8 +51,10 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect(`mongodb+srv://${dbConfig.username}:${dbConfig.password}@cluster0.vpydxo1.mongodb.net/${dbConfig.database}?retryWrites=true&w=majority`)
-    .then( () => {
+    .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}` +
+        `@cluster0.vpydxo1.mongodb.net/${process.env.DB_NAME}?` +
+        `retryWrites=true&w=majority`)
+    .then(() => {
         app.listen(5500);
     })
     .catch(err => {
