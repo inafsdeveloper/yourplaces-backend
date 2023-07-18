@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const HttpError = require('../models/http-error');
-const secretKey = require('../shared/config/secret.json')['secret-key'];
 module.exports = (req, res, next) => {
     if (req.method === 'OPTIONS') {
         return next();
@@ -12,7 +11,7 @@ module.exports = (req, res, next) => {
             throw new HttpError('Authentication Failed!', 401);
         }
 
-        const decodedToken = jwt.verify(token, secretKey);
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
         req.userData = { userId: decodedToken.userId };
         next();
     } catch (err) {
