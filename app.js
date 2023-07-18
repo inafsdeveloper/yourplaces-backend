@@ -55,7 +55,7 @@ mongoose
         `@cluster0.vpydxo1.mongodb.net/${process.env.DB_NAME}?` +
         `retryWrites=true&w=majority`)
     .then(() => {
-        app.listen(5500);
+        app.listen(process.env.PORT || 5500);
     })
     .catch(err => {
         console.log(err);
