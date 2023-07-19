@@ -9,10 +9,6 @@ const HttpError = require('./models/http-error');
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
 
-const config = require('./shared/config/config.json');
-
-let dbConfig = config.db.mongodb;
-
 const app = express();
 
 app.use(bodyParser.json());
