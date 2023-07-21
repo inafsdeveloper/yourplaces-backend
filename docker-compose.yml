@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            DB_USER: 'inafsdeveloper'
+            DB_PWD: 'YN1XRdCbSktULKYp'
+            DB_NAME: 'mern'
+            GOOGLE_ADDRESS_URL: 'https://maps.googleapis.com/maps/api/geocode/json?address='
+            GOOGLE_API_KEY: 'AIzaSyAStmfghzpbkN_Dgya5h5nMmp6sDahYMws'
+            JWT_SECRET_KEY: 'T6Q59IbiSPaF0wP1XvnFGlfYXRoR7pmv'
+            PORT: 3000

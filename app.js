@@ -21,7 +21,7 @@ app.use((req, res, next) => {
         'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
     next();
-})
+});
 
 app.use('/api/places', placesRoutes); // => /api/places/...
 app.use('/api/users', usersRoutes); // => /api/users/...
@@ -46,6 +46,15 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || 'An unknown error occured!' });
 });
 
+// console.log(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}` +
+// `@cluster0.vpydxo1.mongodb.net/${process.env.DB_NAME}?` +
+// `retryWrites=true&w=majority`);
+
+// console.log('process.env.PORT : '); console.log(process.env.PORT);
+// console.log('process.env.DB_USER : '); console.log(process.env.DB_USER);
+// console.log('process.env.DB_PWD : '); console.log(process.env.DB_PWD);
+// console.log('process.env.DB_NAME : '); console.log(process.env.DB_NAME);
+
 mongoose
     .connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PWD}` +
         `@cluster0.vpydxo1.mongodb.net/${process.env.DB_NAME}?` +
@@ -54,5 +63,6 @@ mongoose
         app.listen(process.env.PORT || 5500);
     })
     .catch(err => {
+        console.log('Connection error');
         console.log(err);
     });
